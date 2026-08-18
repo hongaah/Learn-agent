@@ -1409,5 +1409,6 @@ git commit -m "docs: 教程入口 README（环境准备、路线图、术语表�
 - [ ] 全仓库 grep 不到硬编码的模型名：
       `grep -rn 'ugreen-ai-model\|claude-opus-5\|claude-sonnet' examples/ | grep -v README`
       应该无输出（模型名只能出现在 README 说明和 .env.example 里）
-- [ ] 全仓库 grep 不到真实 key：
-      `grep -rn 'bc926e1d' . --exclude-dir=node_modules --exclude=.env` 应该无输出
+- [ ] 全仓库 grep 不到真实 key。**用 `.env` 里的值现算，绝不要把 key 的任何片段写进文件**：
+      `grep -rnF "$(grep '^ANTHROPIC_API_KEY=' .env | cut -d= -f2)" . --exclude-dir=node_modules --exclude-dir=.git --exclude=.env`
+      应该无输出
