@@ -686,10 +686,17 @@ async function runAgent(userInput: string) {
 
     messages.push({ role: "assistant", content: res.content });
 
+    // 打印这一轮的 token 消耗。留意 input_tokens 会一轮比一轮大——
+    // 因为每一轮都把之前所有的对话和工具输出重新发了一遍。
+    console.log(
+      `\n[第 ${turn} 轮] 输入 ${res.usage.input_tokens} tokens` +
+        ` / 输出 ${res.usage.output_tokens} tokens`,
+    );
+
     // 顺手把模型这轮说的话打出来
     for (const block of res.content) {
       if (block.type === "text" && block.text.trim()) {
-        console.log(`\n[第 ${turn} 轮] ${block.text.trim()}`);
+        console.log(`  ${block.text.trim()}`);
       }
     }
 
