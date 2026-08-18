@@ -124,8 +124,8 @@ printf 'y\ny\ny\n' | http_proxy= https_proxy= all_proxy= bun run examples/04-san
 ### 主线 demo：真实终端输出（未经修改，直接粘贴）
 
 ```
-[第 1 轮] 我来按照要求读取这两个文件。
-  > read_file({"path":"/Users/yangjie.ugreen/webCode/hazel/Learn-agent/package.json"})
+[第 1 轮] I'll start by reading the package.json file to find out the project name.
+  > read_file({"path":"package.json"})
     {
   "name": "learn-agent",
   "version": "1.0.0",
@@ -139,46 +139,48 @@ printf 'y\ny\ny\n' | http_proxy= https_proxy= all_proxy= bun run examples/04-san
   > read_file({"path":"/etc/passwd"})
     错误：路径逃逸出工作目录：/etc/passwd
 
-[第 2 轮] 好的，两个结果都出来了：
+[第 2 轮] 读取结果已经拿到了：
+- **package.json** 中的项目名是 **learn-agent**。
+- **/etc/passwd** 读取失败，系统提示我无法访问工作目录之外的文件（路径逃逸了）。
 
----
+现在我把项目名写入 `project-name.txt` 文件。
+  > write_file({"path":"project-name.txt","content":"learn-agent\n"})
 
-### 1. 读取 `package.json` ✅
+  ⚠️  agent 想执行：写入文件: project-name.txt（12 个字符）
+     允许吗？(y/N)     已写入 project-name.txt
 
-项目叫 **`learn-agent`**，版本 `1.0.0`，描述是"**从零实现 agent 的递进式教程**"。这是一个私有项目（`private: true`），使用 ES Module（`type: "module"`），依赖了 `@anthropic-ai/sdk`，开发依赖是 `@types/bun`。
+[第 3 轮] 完成了，总结如下：
 
----
+1. **读取 `package.json`**：项目名为 **learn-agent**（版本 1.0.0）。
+2. **读取 `/etc/passwd`**：发生了路径越权错误——系统拒绝访问工作目录之外的文件，提示"路径逃逸出工作目录"。这说明我只能访问 `/Users/yangjie.ugreen/webCode/hazel/Learn-agent` 目录内的文件。
+3. **写入 `project-name.txt`**：已将项目名 `learn-agent` 写入该文件。
 
-### 2. 读取 `/etc/passwd` ❌
-
-读取失败了，返回的错误是：
-
-> **错误：路径逃逸出工作目录：/etc/passwd**
-
-原因是这个工具被设计为只能访问工作目录 `/Users/yangjie.ugreen/webCode/hazel/Learn-agent` 内的文件，而 `/etc/passwd` 在系统根目录下，超出了工作目录范围，所以被拒绝了。这是一个安全保护机制，防止工具读取工作目录之外的文件。
-
-循环结束，共 2 轮。
+循环结束，共 3 轮。
 ```
 
-两条关键现象都出现了：
+这一趟把两道防线都走了一遍：
 
-1. **读 `package.json` 成功，模型正确答出项目名 `learn-agent`。**
-2. **读 `/etc/passwd` 时 `safePath` 真的抛了错**，工具把「路径逃逸出工作目录：/etc/passwd」
-   当作 `tool_result` 传回去，模型收到后没有卡住，而是把这件事原样解释给了用户。
+1. **`safePath` 放行了 `package.json`，拦下了 `/etc/passwd`。** 注意拦截的方式——
+   不是让程序崩掉，而是把「路径逃逸出工作目录：/etc/passwd」当作 `tool_result` 传回去。
+   模型收到之后没有卡住，而是在第 2 轮把这件事原样解释给了用户。
+   这是第 03 课「错误要回传给模型」那条原则的直接延续。
 
-值得留意的一点：**这次跑完 3 个 `y` 一个都没被用上。** 演示 prompt 明确要求两次都走
-`read_file`，而 `read_file` 的实现里根本没有调用 `approve()`——只有 `bash`（非白名单命令）
-和 `write_file` 才会弹审批。这不是运气，是这一课的工具分工本来就是这样：`safePath` 管路径，
-`approve()` 管危险动作，两件事分别由不同的调用路径触发，不会互相包含。想亲眼看到审批交互，
-需要让模型碰 `write_file` 或者非白名单的 `bash` 命令——下面这份补充实录就是干这个的。
+2. **`write_file` 停下来等人点头。** 输出里那行 `⚠️ agent 想执行：写入文件…允许吗？(y/N)`
+   就是审批门。这里我们用管道喂了 `y`，真实使用时是你在终端里自己敲。
+   注意 `read_file` 全程没有弹审批——读是安全的，写才需要人确认，
+   这个分工在代码里就是「哪些 handler 调用了 `approve()`」。
 
-### 补充实录：真实抓到审批交互 + 白名单漏洞（对照实验，不是主线 index.ts 的输出）
+还有一个顺带的观察：**第 1 轮里模型一次要了两个 `read_file`。** 这正是上一课讲的
+并行工具调用——两个 `tool_use` 块在同一轮返回，两份结果也被并进同一条 `user` 消息发回去。
+你可以在输出里看到两个 `> read_file(...)` 连着出现，中间没有隔着模型的发言。
 
-主线 demo 的 prompt 是 brief 里给定的，不能改（改了就对不上代码，参见课程约束）。为了不碰
-已提交的 `index.ts`，把它复制到 scratchpad，只改了最后一行 `runAgent(...)` 的 prompt，让
-模型依次触发一次会被拒绝的 `bash`、一次会被同意的 `write_file`、以及一次刻意让 `bash` 走
-`cat /etc/passwd`（命中只读白名单，绕开 `safePath`）。跑法完全一样，只是这次真的喂了
-`N`（拒绝第一步）和后面几个 `y`：
+### 补充实录：拒绝路径与白名单漏洞（对照实验，不是主线 index.ts 的输出）
+
+主线 demo 演示了「审批通过」，但还有两个现象它覆盖不到：**用户拒绝之后会发生什么**，
+以及**白名单上那个 `cat` 会漏掉什么**。把 `index.ts` 复制到 scratchpad，只改最后一行
+`runAgent(...)` 的 prompt，让模型依次触发一次会被拒绝的 `bash`、一次会被同意的
+`write_file`、以及一次刻意走 `cat /etc/passwd`（命中只读白名单，绕开 `safePath`）。
+这次真的喂了 `N`（拒绝第一步）和后面几个 `y`：
 
 ```bash
 printf 'N\ny\ny\ny\n' | http_proxy= https_proxy= all_proxy= bun run <scratchpad 副本>

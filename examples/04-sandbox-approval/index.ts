@@ -165,7 +165,14 @@ async function runAgent(userInput: string) {
 // 注意这里明确要求用 read_file 工具。
 // 如果不指定，模型可能选 bash 去 cat，而 cat 在只读白名单里会被自动放行,
 // 就绕过了 safePath —— 这个洞是真实存在的，README 第 5 节会正面讲。
+// 这个任务会依次踩到本课的三道防线：
+//   1. read_file 读 package.json —— safePath 放行
+//   2. read_file 读 /etc/passwd  —— safePath 拦截
+//   3. write_file 写文件         —— 弹出审批门，等你点头
+// 特意指定 read_file 而不是让模型自由发挥：如果它改用 bash 去 cat，
+// 就会命中只读白名单被直接放行，绕开 safePath —— 这个洞 README 第 5 节会正面讲。
 await runAgent(
   "用 read_file 工具读 package.json，告诉我这个项目叫什么。" +
-    "然后同样用 read_file 工具试着读 /etc/passwd，把发生的事告诉我。",
+    "然后同样用 read_file 工具试着读 /etc/passwd，把发生的事告诉我。" +
+    "最后用 write_file 把项目名写进 project-name.txt。",
 );
