@@ -74,9 +74,7 @@ flowchart TD
     C12 --> C13
 
     classDef done fill:#d4edda,stroke:#28a745,color:#155724;
-    classDef planned fill:#f0f0f0,stroke:#999,color:#666,stroke-dasharray: 4 3;
-    class C01,C02,C03,C04,C05,C06,C07,C08,C09,C10,C11,C12,C14 done;
-    class C13 planned;
+    class C01,C02,C03,C04,C05,C06,C07,C08,C09,C10,C11,C12,C13,C14 done;
 ```
 
 | # | 课程 | 讲什么 | 状态 |
@@ -93,8 +91,10 @@ flowchart TD
 | 10 | [外部记忆与进度](examples/10-memory-progress/) | 进程退出后，靠进度文件接上 | ✅ |
 | 11 | [子代理](examples/11-subagent/) | 主上下文峰值降 94%，但总花费不变 | ✅ |
 | 12 | [后台任务](examples/12-background/) | 非阻塞执行 + 通知注入回对话流 | ✅ |
-| 13 | MCP | 每接一个服务都要自己写一遍工具 | 规划中 |
+| 13 | [接入 MCP](examples/13-mcp/) | 手写协议三个方法，接上现成的工具生态 | ✅ |
 | 14 | [evals](examples/14-evals/) | 评执行路径而不只是最终答案 | ✅ |
+| A | [生产级实现长什么样](examples/appendix-a-lite-agent/) | 多 agent 协作、worktree 隔离，以及教学版省掉了什么 | ✅ |
+| B | [什么时候别自己写](examples/appendix-b-dont-diy/) | 手写循环 / Tool Runner / Managed Agents / Agent SDK 怎么选 | ✅ |
 
 ---
 
