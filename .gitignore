@@ -3,3 +3,5 @@ node_modules/
 *.log
 md-list.txt
 project-name.txt
+.transcripts/
+examples/10-memory-progress/PROGRESS.md

@@ -53,11 +53,11 @@ flowchart TD
     end
 
     subgraph L2["L2 · 成本与健壮"]
-        C05["05 prompt caching"] --> C06["06 流式输出与错误处理"]
+        C05["05 上下文的成本结构"] --> C06["06 流式输出与错误处理"]
     end
 
     subgraph L3["L3 · 上下文工程"]
-        C07["07 工具设计与提示词 altitude"] --> C08["08 上下文压缩"] --> C09["09 按需加载"] --> C10["10 外部记忆与进度"]
+        C07["07 工具设计"] --> C08["08 上下文压缩"] --> C09["09 按需加载"] --> C10["10 外部记忆与进度"]
     end
 
     subgraph L4["L4 · 扩展"]
@@ -75,8 +75,8 @@ flowchart TD
 
     classDef done fill:#d4edda,stroke:#28a745,color:#155724;
     classDef planned fill:#f0f0f0,stroke:#999,color:#666,stroke-dasharray: 4 3;
-    class C01,C02,C03,C04 done;
-    class C05,C06,C07,C08,C09,C10,C11,C12,C13,C14 planned;
+    class C01,C02,C03,C04,C05,C06,C07 done;
+    class C08,C09,C10,C11,C12,C13,C14 planned;
 ```
 
 | # | 课程 | 讲什么 | 状态 |
@@ -85,9 +85,9 @@ flowchart TD
 | 02 | [第一个工具](examples/02-first-tool/) | tool schema、tool_use、tool_result 回填 | ✅ |
 | 03 | [循环起来](examples/03-tool-loop/) | while 循环、分发表、并行工具调用 | ✅ |
 | 04 | [沙箱与审批门](examples/04-sandbox-approval/) | 路径逃逸、白名单、人在回路 | ✅ |
-| 05 | prompt caching | agent 每轮重发历史，缓存怎么救命 | 规划中 |
-| 06 | 流式输出与错误处理 | 长输出超时、429 重试、工具失败回传 | 规划中 |
-| 07 | 工具设计与提示词 altitude | 为什么 30 个工具的 agent 比 5 个的更蠢 | 规划中 |
+| 05 | [上下文的成本结构](examples/05-context-cost/) | 每轮到底重复发了什么、占多少 | ✅ |
+| 06 | [流式输出与错误处理](examples/06-streaming-errors/) | 别让用户干等，别让一个错误崩掉循环 | ✅ |
+| 07 | [工具设计](examples/07-tool-design/) | 8 个重叠工具 vs 3 个清晰工具的实测对比 | ✅ |
 | 08 | 上下文压缩 | 20 轮之后上下文爆了怎么办 | 规划中 |
 | 09 | 按需加载 | 知识全塞进 system prompt 太贵 | 规划中 |
 | 10 | 外部记忆与进度 | 会话结束就失忆 | 规划中 |
