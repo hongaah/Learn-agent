@@ -1,0 +1,13 @@
+{
+  "name": "learn-agent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "从零实现 agent 的递进式教程",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.117.1"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}
