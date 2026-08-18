@@ -75,8 +75,8 @@ flowchart TD
 
     classDef done fill:#d4edda,stroke:#28a745,color:#155724;
     classDef planned fill:#f0f0f0,stroke:#999,color:#666,stroke-dasharray: 4 3;
-    class C01,C02,C03,C04,C05,C06,C07 done;
-    class C08,C09,C10,C11,C12,C13,C14 planned;
+    class C01,C02,C03,C04,C05,C06,C07,C08,C09,C10 done;
+    class C11,C12,C13,C14 planned;
 ```
 
 | # | 课程 | 讲什么 | 状态 |
@@ -88,9 +88,9 @@ flowchart TD
 | 05 | [上下文的成本结构](examples/05-context-cost/) | 每轮到底重复发了什么、占多少 | ✅ |
 | 06 | [流式输出与错误处理](examples/06-streaming-errors/) | 别让用户干等，别让一个错误崩掉循环 | ✅ |
 | 07 | [工具设计](examples/07-tool-design/) | 8 个重叠工具 vs 3 个清晰工具的实测对比 | ✅ |
-| 08 | 上下文压缩 | 20 轮之后上下文爆了怎么办 | 规划中 |
-| 09 | 按需加载 | 知识全塞进 system prompt 太贵 | 规划中 |
-| 10 | 外部记忆与进度 | 会话结束就失忆 | 规划中 |
+| 08 | [上下文压缩](examples/08-compaction/) | 累计 token 降 82% 的两级压缩 | ✅ |
+| 09 | [按需加载](examples/09-progressive-disclosure/) | SKILL.md 索引常驻、正文按需取 | ✅ |
+| 10 | [外部记忆与进度](examples/10-memory-progress/) | 进程退出后，靠进度文件接上 | ✅ |
 | 11 | subagent | 一次搜索把主上下文塞满垃圾 | 规划中 |
 | 12 | 后台任务 | 起个 dev server 就把主循环卡死 | 规划中 |
 | 13 | MCP | 每接一个服务都要自己写一遍工具 | 规划中 |
