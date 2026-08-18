@@ -75,8 +75,8 @@ flowchart TD
 
     classDef done fill:#d4edda,stroke:#28a745,color:#155724;
     classDef planned fill:#f0f0f0,stroke:#999,color:#666,stroke-dasharray: 4 3;
-    class C01,C02,C03,C04,C05,C06,C07,C08,C09,C10 done;
-    class C11,C12,C13,C14 planned;
+    class C01,C02,C03,C04,C05,C06,C07,C08,C09,C10,C11,C12,C14 done;
+    class C13 planned;
 ```
 
 | # | 课程 | 讲什么 | 状态 |
@@ -91,10 +91,10 @@ flowchart TD
 | 08 | [上下文压缩](examples/08-compaction/) | 累计 token 降 82% 的两级压缩 | ✅ |
 | 09 | [按需加载](examples/09-progressive-disclosure/) | SKILL.md 索引常驻、正文按需取 | ✅ |
 | 10 | [外部记忆与进度](examples/10-memory-progress/) | 进程退出后，靠进度文件接上 | ✅ |
-| 11 | subagent | 一次搜索把主上下文塞满垃圾 | 规划中 |
-| 12 | 后台任务 | 起个 dev server 就把主循环卡死 | 规划中 |
+| 11 | [子代理](examples/11-subagent/) | 主上下文峰值降 94%，但总花费不变 | ✅ |
+| 12 | [后台任务](examples/12-background/) | 非阻塞执行 + 通知注入回对话流 | ✅ |
 | 13 | MCP | 每接一个服务都要自己写一遍工具 | 规划中 |
-| 14 | evals | 改了提示词，agent 是变好还是变坏 | 规划中 |
+| 14 | [evals](examples/14-evals/) | 评执行路径而不只是最终答案 | ✅ |
 
 ---
 
